@@ -1,7 +1,3 @@
-https://github.com/Harshaaaaaaaa/feeswitchfinalboss/blob/main/src/components/Layout.tsx
-
-Click pencil icon, delete everything, and paste this:
-
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { ThemeSelector } from "@/components/ThemeSelector";
