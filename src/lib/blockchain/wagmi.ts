@@ -2,6 +2,7 @@ import { createConfig as createPrivyConfig } from '@privy-io/wagmi'
 import { createConfig as createWagmiConfig } from 'wagmi'
 import { http } from 'wagmi'
 import { injected } from 'wagmi/connectors'
+import { farcasterMiniApp } from '@farcaster/miniapp-wagmi-connector'
 import { 
   supportedChains, 
   base, 
@@ -49,7 +50,10 @@ export const wagmiConfig = config.privy.appId && config.privy.clientId
     })
   : createWagmiConfig({
       chains: supportedChains,
-      connectors: [injected()],
+      connectors: [
+        farcasterMiniApp(), // Farcaster Mini App connector - auto-connects in Farcaster
+        injected(),         // Fallback to injected wallet (MetaMask, etc.)
+      ],
       transports,
     })
 
@@ -70,4 +74,14 @@ export {
   shape, 
   scroll, 
   ethereum 
-} 
+}
+What Changed
+Line 5: Added import for Farcaster connector
+
+import { farcasterMiniApp } from '@farcaster/miniapp-wagmi-connector'
+Lines 52-54: Added Farcaster connector FIRST in the connectors array
+
+connectors: [
+  farcasterMiniApp(), // Auto-connects in Farcaster Mini App
+  injected(),         // Fallback for regular browsers
+],
