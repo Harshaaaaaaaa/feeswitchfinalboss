@@ -42,7 +42,6 @@ const transports = {
   [shape.id]: http(getRpcUrl(shape.id)),
 }
 
-// Dynamically choose config: Privy when available, otherwise InjectedConnector fallback
 export const wagmiConfig = config.privy.appId && config.privy.clientId
   ? createPrivyConfig({
       chains: supportedChains,
@@ -51,8 +50,8 @@ export const wagmiConfig = config.privy.appId && config.privy.clientId
   : createWagmiConfig({
       chains: supportedChains,
       connectors: [
-        farcasterMiniApp(), // Farcaster Mini App connector - auto-connects in Farcaster
-        injected(),         // Fallback to injected wallet (MetaMask, etc.)
+        farcasterMiniApp(),
+        injected(),
       ],
       transports,
     })
