@@ -50,8 +50,6 @@ function priceToTick(price: number): number {
   return Math.floor(Math.log(price) / Math.log(1.0001));
 }
 
-
-
 function nearestUsableTick(tick: number, tickSpacing: number): number {
   return Math.round(tick / tickSpacing) * tickSpacing;
 }
@@ -61,7 +59,6 @@ export default function UniswapV3LP() {
   const [activeTab, setActiveTab] = useState('positions');
   const [isFarcasterContext, setIsFarcasterContext] = useState(false);
   
-
   const [feeTier, setFeeTier] = useState(3000);
   const [amount0, setAmount0] = useState('');
   const [amount1, setAmount1] = useState('');
@@ -73,6 +70,64 @@ export default function UniswapV3LP() {
   const [token1Decimals, setToken1Decimals] = useState(6);
   const [token0Symbol, setToken0Symbol] = useState('WETH');
   const [token1Symbol, setToken1Symbol] = useState('USDC');
+
+  const { data: token0Details } = useReadContract({
+    contractAddress: token0Address,
+    chainId: CHAIN_ID,
+    abi: WETH.abi,
+    functionName: 'symbol',
+    options: {
+      enabled: !!token0Address && token0Address !== WETH_ADDRESS,
+    },
+  });
+
+  const { data: token0DecimalsData } = useReadContract({
+    contractAddress: token0Address,
+    chainId: CHAIN_ID,
+    abi: WETH.abi,
+    functionName: 'decimals',
+    options: {
+      enabled: !!token0Address && token0Address !== WETH_ADDRESS,
+    },
+  });
+
+  const { data: token1Details } = useReadContract({
+    contractAddress: token1Address,
+    chainId: CHAIN_ID,
+    abi: USDC.abi,
+    functionName: 'symbol',
+    options: {
+      enabled: !!token1Address && token1Address !== USDC_ADDRESS,
+    },
+  });
+
+  const { data: token1DecimalsData } = useReadContract({
+    contractAddress: token1Address,
+    chainId: CHAIN_ID,
+    abi: USDC.abi,
+    functionName: 'decimals',
+    options: {
+      enabled: !!token1Address && token1Address !== USDC_ADDRESS,
+    },
+  });
+
+  useEffect(() => {
+    if (token0Details && typeof token0Details === 'string') {
+      setToken0Symbol(token0Details);
+    }
+    if (token0DecimalsData && typeof token0DecimalsData === 'number') {
+      setToken0Decimals(token0DecimalsData);
+    }
+  }, [token0Details, token0DecimalsData]);
+
+  useEffect(() => {
+    if (token1Details && typeof token1Details === 'string') {
+      setToken1Symbol(token1Details);
+    }
+    if (token1DecimalsData && typeof token1DecimalsData === 'number') {
+      setToken1Decimals(token1DecimalsData);
+    }
+  }, [token1Details, token1DecimalsData]);
 
   useEffect(() => {
     const initFarcaster = async () => {
@@ -147,13 +202,13 @@ export default function UniswapV3LP() {
   });
 
   const { write: approveWETH, state: approveWETHState } = useWriteContractLifecycle({
-    successMessage: 'WETH approved',
-    errorMessage: 'Failed to approve WETH',
+    successMessage: 'Token approved',
+    errorMessage: 'Failed to approve token',
   });
 
   const { write: approveUSDC, state: approveUSDCState } = useWriteContractLifecycle({
-    successMessage: 'USDC approved',
-    errorMessage: 'Failed to approve USDC',
+    successMessage: 'Token approved',
+    errorMessage: 'Failed to approve token',
   });
 
   const { write: mintPosition, state: mintState } = useWriteContractLifecycle({
@@ -357,7 +412,7 @@ export default function UniswapV3LP() {
               <CardContent>
                 {balance && Number(balance) > 0 ? (
                   <div className="space-y-4">
-                     {positionData && tokenOfOwnerByIndex !== undefined && (
+                    {positionData && tokenOfOwnerByIndex !== undefined && (
                       <div className="space-y-4 p-4 border rounded-lg bg-card">
                         <div className="flex items-center justify-between">
                           <div>
@@ -437,20 +492,8 @@ export default function UniswapV3LP() {
                       value={token0Address}
                       onChange={(e) => setToken0Address(e.target.value as Address)}
                     />
-                    <div className="flex gap-2">
-                      <Input
-                        placeholder="Symbol"
-                        value={token0Symbol}
-                        onChange={(e) => setToken0Symbol(e.target.value)}
-                        className="w-24"
-                      />
-                      <Input
-                        type="number"
-                        placeholder="Decimals"
-                        value={token0Decimals}
-                        onChange={(e) => setToken0Decimals(Number(e.target.value))}
-                        className="w-24"
-                      />
+                    <div className="text-xs text-muted-foreground">
+                      {token0Symbol} ({token0Decimals} decimals)
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -461,20 +504,8 @@ export default function UniswapV3LP() {
                       value={token1Address}
                       onChange={(e) => setToken1Address(e.target.value as Address)}
                     />
-                    <div className="flex gap-2">
-                      <Input
-                        placeholder="Symbol"
-                        value={token1Symbol}
-                        onChange={(e) => setToken1Symbol(e.target.value)}
-                        className="w-24"
-                      />
-                      <Input
-                        type="number"
-                        placeholder="Decimals"
-                        value={token1Decimals}
-                        onChange={(e) => setToken1Decimals(Number(e.target.value))}
-                        className="w-24"
-                      />
+                    <div className="text-xs text-muted-foreground">
+                      {token1Symbol} ({token1Decimals} decimals)
                     </div>
                   </div>
                 </div>
