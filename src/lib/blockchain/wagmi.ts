@@ -75,13 +75,3 @@ export {
   scroll, 
   ethereum 
 }
-What Changed
-Line 5: Added import for Farcaster connector
-
-import { farcasterMiniApp } from '@farcaster/miniapp-wagmi-connector'
-Lines 52-54: Added Farcaster connector FIRST in the connectors array
-
-connectors: [
-  farcasterMiniApp(), // Auto-connects in Farcaster Mini App
-  injected(),         // Fallback for regular browsers
-],
