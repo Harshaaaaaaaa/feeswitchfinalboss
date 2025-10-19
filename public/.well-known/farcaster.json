@@ -11,8 +11,8 @@
     "splashImageUrl": "https://feeswitchfinalboss.vercel.app/placeholder.svg",
     "splashBackgroundColor": "#1a1a1a",
     "homeUrl": "https://feeswitchfinalboss.vercel.app",
-    "subtitle": "Uniswap V3 LP Manager",
-    "description": "Create and manage concentrated liquidity positions on Uniswap V3. Collect fees and optimize your DeFi strategy.",
+    "subtitle": "Uniswap V3 LP manager on Base",
+    "description": "Manage concentrated liquidity positions and collect fees on Uniswap V3",
     "primaryCategory": "finance",
     "tags": ["uniswap", "defi", "liquidity", "base", "v3"]
   }
